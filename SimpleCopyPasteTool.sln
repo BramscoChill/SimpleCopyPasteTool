@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCopyPasteTool", "SimpleCopyPasteTool\SimpleCopyPasteTool.csproj", "{8D9432BC-7CD7-4D1A-AD70-42E3F1940725}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SimpleCopyPasteToolSetup", "SimpleCopyPasteToolSetup\SimpleCopyPasteToolSetup.vdproj", "{C94D355F-27C5-4370-9DD8-63D37968EE84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCopyPasteToolRemoval", "SimpleCopyPasteToolRemoval\SimpleCopyPasteToolRemoval.csproj", "{379EBCE3-DC59-42D9-8FB0-A9B2D3021DF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D9432BC-7CD7-4D1A-AD70-42E3F1940725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D9432BC-7CD7-4D1A-AD70-42E3F1940725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D9432BC-7CD7-4D1A-AD70-42E3F1940725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D9432BC-7CD7-4D1A-AD70-42E3F1940725}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C94D355F-27C5-4370-9DD8-63D37968EE84}.Debug|Any CPU.ActiveCfg = Debug
+		{C94D355F-27C5-4370-9DD8-63D37968EE84}.Release|Any CPU.ActiveCfg = Release
+		{379EBCE3-DC59-42D9-8FB0-A9B2D3021DF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379EBCE3-DC59-42D9-8FB0-A9B2D3021DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379EBCE3-DC59-42D9-8FB0-A9B2D3021DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379EBCE3-DC59-42D9-8FB0-A9B2D3021DF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

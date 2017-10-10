@@ -1,0 +1,75 @@
+pwd: brambram
+
+right format for VS:
+"c:\OpenSSL-Win32\bin\openssl.exe" req -x509 -nodes -sha256 -days 999 -subj "/CN=Local" -newkey rsa:2048 -keyout SimpleCopyPasteTool.key -out SimpleCopyPasteTool.crt
+
+generate pfx:
+"c:\OpenSSL-Win32\bin\openssl.exe" pkcs12 -export -in SimpleCopyPasteTool.crt -inkey SimpleCopyPasteTool.key -CSP "Microsoft Enhanced RSA and AES Cryptographic Provider" -out SimpleCopyPasteTool.pfx
+
+
+"c:\Program Files (x86)\Windows Kits\10\bin\x86\signtool.exe" sign /v /ph /fd sha256 /t http://timestamp.verisign.com/scripts/timestamp.dll /f "d:\Data\P Talen\C SHARP\Goede Projecten\SimpleCopyPasteTool\SimpleCopyPasteTool\Dependencies\SimpleCopyPasteTool.pfx" /p brambrambram /a "d:\Data\P Talen\C SHARP\Goede Projecten\SimpleCopyPasteTool\SimpleCopyPasteTool\bin\Release\SimpleCopyPasteTool.exe"
+
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" -T SimpleCopyPasteTool.exe
+	
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" -Ra "d:\Data\P Talen\C SHARP\Goede Projecten\SimpleCopyPasteTool\SimpleCopyPasteTool\bin\Release\SimpleCopyPasteTool.exe" "d:\Data\P Talen\C SHARP\Goede Projecten\SimpleCopyPasteTool\SimpleCopyPasteTool\Dependencies\SimpleCopyPasteTool.snk"
+
+It is not working to sign an assembly in visual studio, use:
+
+REM If SIGNTOOL environment variable is not set then try setting it to a known location
+if "%SIGNTOOL%"=="" set SIGNTOOL=%ProgramFiles(x86)%\Windows Kits\8.1\bin\x86\signtool.exe
+REM Check to see if the signtool utility is missing
+if exist "%SIGNTOOL%" goto OK1
+    REM Give error that SIGNTOOL environment variable needs to be set
+    echo "Must set environment variable SIGNTOOL to full path for signtool.exe code signing utility"
+    echo Location is of the form "C:\Program Files (x86)\Windows Kits\8.1\x86\bin\signtool.exe"
+    exit -1
+:OK1
+echo Copying $(TargetFileName) to $(TargetDir)SimpleCopyPasteToolSigned.exe
+copy "$(TargetPath)" "$(TargetDir)SimpleCopyPasteToolSigned.exe"
+echo Signtool '%SIGNTOOL%' sign /t http://timestamp.verisign.com/scripts/timestamp.dll /f "$(ProjectDir)Dependencies\SimpleCopyPasteTool.pfx" /a "$(TargetDir)SimpleCopyPasteToolSigned.exe"
+"%SIGNTOOL%" sign /t http://timestamp.verisign.com/scripts/timestamp.dll /f "$(ProjectDir)Dependencies\SimpleCopyPasteTool.pfx" /p brambram /a "$(TargetDir)SimpleCopyPasteToolSigned.exe"
+
+
+-----------------------------------------------------------------------
+
+Error
+Cannot import the following key file: Dependencies\SimpleCopyPasteTool.pfx. The key file may be password protected. To correct this, try to import the certificate again or manually install the certificate to the Strong Name CSP with the following key container name: VS_KEY_E1AFDF325C71A5E7	SimpleCopyPasteTool			
+		
+
+Solution:
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" –i SimpleCopyPasteTool.pfx VS_KEY_E1AFDF325C71A5E7
+
+-----------------------------------------------------------------------
+openssl.exe pkcs12 -export -in Local.crt -inkey Local.key -CSP "Microsoft Enhanced RSA and AES Cryptographic Provider" -out Local.pfx
+
+"c:\OpenSSL-Win32\bin\openssl.exe" req -x509 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
+"c:\OpenSSL-Win32\bin\openssl.exe" pkcs12 -export -out signingpersonalfx.pfx -inkey privateKey.key -in certificate.crt
+"c:\OpenSSL-Win32\bin\openssl.exe" pkcs12 -info -in signingpersonalfx.pfx
+
+get public key token from assembly:
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" -T SimpleCopyPasteToolSigned.exe
+
+generate snk file from pfx:
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" -p SimpleCopyPasteTool.pfx SimpleCopyPasteTool.snk
+
+get public key from snk file:
+"c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\sn.exe" -tp SimpleCopyPasteTool.snk
+
+6cc09bc419154017
+"98D765088DC5105E"
+
+
+https://stackoverflow.com/questions/35180006/net-signing-with-strong-name-key-file-and-sha256
+There are 2 options to create Personal Exchange File (*.pfx),
+
+Using Makecert
+
+"makecert.exe" -n "CN=Local" - r -pe -a sha256 -len 2048 -cy authority -e 03/03/2017 -sv Local.pvk Local.cer
+
+"pvk2pfx.exe" -pvk Local.pvk -spc Local.cer -pfx Local.pfx -po MyPassword -sy 24
+Using OpenSSL
+
+openssl.exe req -x509 -nodes -sha256 -days 3650 -subj "/CN=Local" -newkey rsa:2048 -keyout Local.key -out Local.crt
+
+openssl.exe pkcs12 -export -in Local.crt -inkey Local.key -CSP "Microsoft Enhanced RSA and AES Cryptographic Provider" -out Local.pfx
+The OpenSSL is more reliable way of doing this.

@@ -1,0 +1,166 @@
+﻿<Window x:Class="SimpleCopyPasteTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleCopyPasteTool"
+        xmlns:vm="clr-namespace:SimpleCopyPasteTool.ViewModel"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Simple-Copy-Past-Tool" Height="185.326" Width="555.815" FontSize="14" FontFamily="Arial" ResizeMode="CanResize">
+    <Window.Resources>
+        <vm:MainWindowViewModel x:Key="MainScreenViewModelContext" />
+        
+        
+        <Style x:Key="MainLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="MainTextblockStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="5,3,5,3" />
+        </Style>
+    </Window.Resources>
+
+    <Grid DataContext="{StaticResource MainScreenViewModelContext}" Name="mainGrid" Focusable="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3" />
+        </Grid.RowDefinitions>
+        <!-- Menu Bar -->
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="1,0,0,0" 
+                   HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Height="28">
+            <Menu FontSize="14">
+                <MenuItem Header="Bestand">
+                    <Separator />
+                    <MenuItem Header="Afsluiten" InputGestureText="Alt-F4" Command="{Binding ExitApplicationCommand}">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                Klik hier om af te sluiten
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Tools">
+                    <MenuItem Header="Opties" Command="{Binding OpenOptionsCommand}">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                Klik hier om naar de instellingen te gaan
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
+                    <Separator />
+                    <Separator />
+                    <MenuItem Header="Over" Command="{Binding OpenAboutCommand}">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                Over de maker
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
+                </MenuItem>
+                <Separator />
+                <Separator />
+                <Label Focusable="False" IsEnabled="False" Content="{Binding Path=StatusLabelText, UpdateSourceTrigger=PropertyChanged}" />
+                
+            </Menu>
+        </DockPanel>
+        <StackPanel Grid.Row="1">
+            <Viewbox Stretch="Uniform">
+                <ItemsControl ItemsSource="{Binding HotkeyItemCollection}" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="5" Width="465">
+                                <Grid.Resources>
+                                    <system:Double x:Key="defaultRowHeight">30</system:Double>
+                                    <Image x:Key="ShowHideTextImage">
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ShowText}" Value="false">
+                                                        <Setter Property="Source" Value="/Resources/Images/hide.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ShowText}" Value="true">
+                                                        <Setter Property="Source" Value="/Resources/Images/show.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Style x:Key="TextStyle" BasedOn="{StaticResource MainTextblockStyle}" TargetType="TextBox">
+                                        <Setter Property="Text" Value="{Binding Path=Text, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="AcceptsReturn" Value="True"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Top"/>
+                                        <Setter Property="VerticalAlignment" Value="Top"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=ShowText}" Value="True">
+                                                <Setter Property="IsReadOnly" Value="False"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=ShowText}" Value="False">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                            </DataTrigger>
+
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <!--                                                <Setter Property="Height" Value="200"/>-->
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetProperty="Height"
+                                                                From="{StaticResource defaultRowHeight}" To="200" Duration="0:0:1" 
+                                                                AutoReverse="False"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard FillBehavior="Stop">
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetProperty="Height"
+                                                                To="{StaticResource defaultRowHeight}" Duration="0:0:1" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="False">
+                                                <Setter Property="Height" Value="{StaticResource defaultRowHeight}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions >
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MainLabelStyle}" Content="{Binding IdText}"/>
+
+
+                                    <Grid Grid.Row="0" Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="110" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Style="{StaticResource TextStyle}" MouseLeave="InputField_OnMouseLeave" />
+                                    <Button Grid.Column="1" Height="{StaticResource defaultRowHeight}" VerticalAlignment="Top" Margin="5,3,5,3" Command="{Binding ShowHideTextCommand}" Content="{StaticResource ShowHideTextImage}" />
+                                    <Button Grid.Column="2" Height="{StaticResource defaultRowHeight}" VerticalAlignment="Top" x:Name="btnCopyText1" Margin="5,3,5,3" Command="{Binding MainActionTextCommand}">Kopiëren</Button>
+                                </Grid>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Viewbox>
+        </StackPanel>
+    </Grid>
+</Window>

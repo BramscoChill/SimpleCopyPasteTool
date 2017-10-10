@@ -1,0 +1,161 @@
+﻿<Window x:Class="SimpleCopyPasteTool.View.OptionsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleCopyPasteTool.View"
+        xmlns:vm="clr-namespace:SimpleCopyPasteTool.ViewModel"
+        xmlns:numericUpDown="clr-namespace:SimpleCopyPasteTool.Core.NumericUpDown"
+        xmlns:includes="clr-namespace:SimpleCopyPasteTool.Includes"
+        xmlns:core="clr-namespace:SimpleCopyPasteTool.Core"
+        mc:Ignorable="d"
+        Title="Opties" Height="472" Width="600"
+        Topmost="True" ShowInTaskbar="False" ResizeMode="CanResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <vm:OptionsViewModel x:Key="OptionsViewModelContext" />
+        <Style x:Key="MainLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="35" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="MainTextblockStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="5,3,5,3" />
+        </Style>
+        <Style x:Key="HotkeTextBoxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="Red" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="mainGrid" DataContext="{StaticResource OptionsViewModelContext}" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" HorizontalAlignment="Center" Margin="0,-7,0,0" Content="Opties" FontSize="21"  FontWeight="Bold"/>
+
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="15" />
+                
+                
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="1" Background="#F7F7F7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" VerticalAlignment="Center" >Aantal te gebruiken sneltoetsen:</Label>
+                <numericUpDown:NumericSpinner Grid.Column="1" MinValue="{x:Static includes:Constants.MIN_HOTKEYS}" MaxValue="{x:Static includes:Constants.MAX_HOTKEYS}" Decimals="0" Step="1" Value="{Binding AmountHotkeys, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="1" Background="#F7F7F7">
+                <CheckBox VerticalAlignment="Center" FontSize="15" Content="Sneltoetsen werken overal (zonder de focus in het programma te hebben)" IsChecked="{Binding Path=UseGlobalHotkeys, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <Grid Grid.Row="2" Grid.Column="1" Background="#F7F7F7">
+                <CheckBox VerticalAlignment="Center" FontSize="15" Content="Minimaliseren naar systeemvak (door op het min teken te klikken)" IsChecked="{Binding Path=UseMinimizeSystemTray, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="1" Background="#F7F7F7">
+                <CheckBox VerticalAlignment="Center" FontSize="15" Content="Na het kopiëren, alles op de plek van de cursor plakken" IsChecked="{Binding Path=UseDirectPaste, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <Grid Grid.Row="4" Grid.Column="1" Background="#F7F7F7">
+                <CheckBox VerticalAlignment="Center" FontSize="15" Content="Automatisch opstarten, bij het laden van windows" IsChecked="{Binding Path=UseLaunchAtStartup, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <Grid Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Background="#F7F7F7">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" >Sneltoetsen bewerken:</Label>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>    
+                </Grid>
+                <ComboBox Grid.Row="1" Margin="150,0,150,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="15" core:EventFocusAttachment.ElementToFocus="{Binding ElementName=MainTextBox}" 
+                          ItemsSource="{Binding Path=ConfigurableHotkeys}" SelectedValuePath="Id" DisplayMemberPath="Value" SelectedItem="{Binding Path=ConfigurableHotkeySelection}" />
+            </Grid>
+            
+            <Rectangle Grid.Row="7" Fill="AliceBlue" />
+            <Label Grid.Row="7" Grid.Column="0" Style="{StaticResource MainLabelStyle}" Content="{Binding Path=LabelIdText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+
+            <Grid Grid.Row="7" Grid.Column="1" Background="AliceBlue">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <TextBox Grid.Row="0" x:Name="MainTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding Path=Text, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MainTextblockStyle}"  />
+                
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" VerticalContentAlignment="Center" FontSize="18" VerticalAlignment="Center" >Sneltoets: </Label>
+                    <TextBox Grid.Column="1" Grid.ColumnSpan="2" Margin="5" IsReadOnly="True" 
+                             Text="{Binding Path=TextKeyShortcutString, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Style="{StaticResource HotkeTextBoxStyle}"
+                             GotFocus="Text1_GotFocus" LostFocus="Text1_LostFocus"></TextBox>
+                </Grid>
+            </Grid>
+
+
+
+
+            
+            
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Cancel" Command="{Binding CancelOptionsCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Content="Save" Command="{Binding SaveOptionsCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsEnabled="{Binding Path=CanSaveOptions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" />
+        </Grid>
+
+    </Grid>
+
+</Window>
